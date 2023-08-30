@@ -3,10 +3,10 @@ plugins {
 }
 
 android {
-    namespace 'com.solodroid.ads.sdkdemo'
+    namespace 'com.mimikridev.ad.sdkdemo'
     compileSdk 33
     defaultConfig {
-        applicationId "com.solodroid.ads.sdkdemo"
+        applicationId "com.mimikridev.ad.sdkdemo"
         minSdk 21
         targetSdk 33
         versionCode 1

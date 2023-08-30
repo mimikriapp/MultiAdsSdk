@@ -4,18 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/admob_banner_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <FrameLayout
-        android:id="@+id/google_ad_banner_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <RelativeLayout
         android:id="@+id/fan_banner_view_container"
         android:layout_width="match_parent"
@@ -24,13 +12,6 @@
 
     <RelativeLayout
         android:id="@+id/startapp_banner_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:visibility="gone" />
-
-    <RelativeLayout
-        android:id="@+id/unity_banner_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -56,10 +37,11 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <FrameLayout
-        android:id="@+id/wortise_banner_view_container"
+    <RelativeLayout
+        android:id="@+id/pangle_banner_view_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
         android:visibility="gone" />
 
 </LinearLayout>
