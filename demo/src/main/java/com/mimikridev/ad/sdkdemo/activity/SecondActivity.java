@@ -46,7 +46,7 @@ public class SecondActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         adapterPost = new AdapterPost(this, new ArrayList<>());
         recyclerView.setAdapter(adapterPost);
-        displayData(sharedPref.getPostList());
+        //displayData(sharedPref.getPostList());
     }
 
     private void initToolbar() {

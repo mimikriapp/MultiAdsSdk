@@ -29,15 +29,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ProcessLifecycleOwner;
+
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.mimikridev.ad.sdk.format.AdNetwork;
-import com.mimikridev.ad.sdk.format.AppOpenAd;
 import com.mimikridev.ad.sdk.format.BannerAd;
 import com.mimikridev.ad.sdk.format.InterstitialAd;
 import com.mimikridev.ad.sdk.format.MediumRectangleAd;
@@ -71,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnNativeAdStyle;
     LinearLayout nativeAdViewContainer;
     LinearLayout bannerAdView;
-    AppOpenAd.Builder appOpenAdBuilder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +76,7 @@ public class MainActivity extends AppCompatActivity {
         getAppTheme();
         setContentView(R.layout.activity_main);
 
-        if (Constant.FORCE_TO_SHOW_APP_OPEN_AD_ON_START) {
-            ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
-        }
+
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         bannerAdView.addView(View.inflate(this, R.layout.view_banner_ad, null));
 
         initAds();
-        loadOpenAds();
+
         loadBannerAd();
         loadInterstitialAd();
         loadRewardedAd();
@@ -133,31 +127,9 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void loadOpenAds() {
-        if (Constant.OPEN_ADS_ON_RESUME) {
-            appOpenAdBuilder = new AppOpenAd.Builder(this)
-                    .setAdStatus(Constant.AD_STATUS)
-                    .setAdNetwork(Constant.AD_NETWORK)
-                    .setBackupAdNetwork(Constant.BACKUP_AD_NETWORK)
-                    .setApplovinAppOpenId(Constant.APPLOVIN_APP_OPEN_AP_ID)
 
-                    .build();
-        }
-    }
 
-    LifecycleObserver lifecycleObserver = new DefaultLifecycleObserver() {
-        @Override
-        public void onStart(@NonNull LifecycleOwner owner) {
-            DefaultLifecycleObserver.super.onStart(owner);
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                if (Constant.OPEN_ADS_ON_RESUME) {
-                    if (AppOpenAd.isAppOpenAdLoaded) {
-                        appOpenAdBuilder.show();
-                    }
-                }
-            }, 100);
-        }
-    };
+
 
     private void loadBannerAd() {
         bannerAd = new BannerAd.Builder(this)
@@ -294,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         destroyBannerAd();
-        destroyAppOpenAd();
+
         Constant.isAppOpen = false;
     }
 
@@ -420,7 +392,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("Exit", (dialogInterface, i) -> {
             super.onBackPressed();
             destroyBannerAd();
-            destroyAppOpenAd();
             Constant.isAppOpen = false;
         });
         dialog.setNegativeButton("Cancel", null);
@@ -431,11 +402,6 @@ public class MainActivity extends AppCompatActivity {
         bannerAd.destroyAndDetachBanner();
     }
 
-    private void destroyAppOpenAd() {
-        if (Constant.FORCE_TO_SHOW_APP_OPEN_AD_ON_START) {
-            appOpenAdBuilder.destroyOpenAd();
-            ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
-        }
-    }
+
 
 }

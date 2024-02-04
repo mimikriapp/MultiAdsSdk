@@ -13,15 +13,11 @@ import static com.mimikridev.ad.sdk.util.Constant.STARTAPP;
 import android.app.Activity;
 import android.util.Log;
 
-import com.applovin.sdk.AppLovinMediationProvider;
-import com.applovin.sdk.AppLovinSdk;
 
 import com.bytedance.sdk.openadsdk.api.init.PAGConfig;
 import com.bytedance.sdk.openadsdk.api.init.PAGSdk;
 import com.ironsource.mediationsdk.IronSource;
 import com.mimikridev.ad.sdk.helper.AudienceNetworkInitializeHelper;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.StartAppSDK;
 
 
 public class AdNetwork {
@@ -97,22 +93,6 @@ public class AdNetwork {
                     case FACEBOOK:
                         AudienceNetworkInitializeHelper.initializeAd(activity, debug);
                         break;
-                    case STARTAPP:
-                        StartAppSDK.init(activity, startappAppId, false);
-                        StartAppSDK.setTestAdsEnabled(debug);
-                        StartAppAd.disableSplash();
-                        StartAppSDK.setUserConsent(activity, "pas", System.currentTimeMillis(), true);
-                        break;
-                    case APPLOVIN_MAX:
-                        AppLovinSdk.getInstance(activity).setMediationProvider(AppLovinMediationProvider.MAX);
-                        AppLovinSdk.getInstance(activity).initializeSdk(config -> {
-                        });
-                        AudienceNetworkInitializeHelper.initialize(activity);
-                        break;
-                    case APPLOVIN_DISCOVERY:
-                        AppLovinSdk.initializeSdk(activity);
-                        break;
-
                     case PANGLE:
                         Log.d(TAG, PANGLE + "ADS  " + pangleAppId);
                       PAGConfig pAGInitConfig = new PAGConfig.Builder()
@@ -130,9 +110,6 @@ public class AdNetwork {
                                 Log.i(TAG, "PANGLE ADS Failed to Initialize :  " + code);
                             }
                         });
-
-
-
                         break;
 
 
@@ -158,22 +135,6 @@ public class AdNetwork {
                 switch (backupAdNetwork) {
                     case FACEBOOK:
                         AudienceNetworkInitializeHelper.initializeAd(activity, debug);
-                        break;
-                    case STARTAPP:
-                        StartAppSDK.init(activity, startappAppId, false);
-                        StartAppSDK.setTestAdsEnabled(debug);
-                        StartAppAd.disableSplash();
-                        StartAppSDK.setUserConsent(activity, "pas", System.currentTimeMillis(), true);
-                        break;
-                    case APPLOVIN_MAX:
-                        AppLovinSdk.getInstance(activity).setMediationProvider(AppLovinMediationProvider.MAX);
-                        AppLovinSdk.getInstance(activity).initializeSdk(config -> {
-                        });
-                        AudienceNetworkInitializeHelper.initialize(activity);
-                        break;
-
-                    case APPLOVIN_DISCOVERY:
-                        AppLovinSdk.initializeSdk(activity);
                         break;
                     case IRONSOURCE:
                         String advertisingId = IronSource.getAdvertiserId(activity);
@@ -203,8 +164,6 @@ public class AdNetwork {
                                 Log.i(TAG, "PANGLE ADS Failed to Initialize :  " + code);
                             }
                         });
-
-
 
                         break;
                     case NONE:

@@ -12,20 +12,19 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.DefaultLifecycleObserver;
+
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ProcessLifecycleOwner;
+;
 import androidx.multidex.MultiDex;
 
-import com.mimikridev.ad.sdk.format.AppOpenAdAppLovin;
 import com.mimikridev.ad.sdk.util.OnShowAdCompleteListener;
 import com.mimikridev.ad.sdkdemo.data.Constant;
 
 @SuppressWarnings("ConstantConditions")
 public class MyApplication extends Application {
 
-    private AppOpenAdAppLovin appOpenAdAppLovin;
+
 
     Activity currentActivity;
 
@@ -34,9 +33,9 @@ public class MyApplication extends Application {
         super.onCreate();
         if (!Constant.FORCE_TO_SHOW_APP_OPEN_AD_ON_START) {
             registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
-            ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
 
-            appOpenAdAppLovin = new AppOpenAdAppLovin();
+
+
 
         }
     }
@@ -47,29 +46,7 @@ public class MyApplication extends Application {
         MultiDex.install(this);
     }
 
-    LifecycleObserver lifecycleObserver = new DefaultLifecycleObserver() {
-        @Override
-        public void onStart(@NonNull LifecycleOwner owner) {
-            DefaultLifecycleObserver.super.onStart(owner);
-            if (Constant.isAppOpen) {
-                if (Constant.OPEN_ADS_ON_RESUME) {
-                    if (Constant.AD_STATUS.equals(AD_STATUS_ON)) {
-                        switch (Constant.AD_NETWORK) {
-                            case APPLOVIN_MAX:
-                                if (!Constant.APPLOVIN_APP_OPEN_AP_ID.equals("0")) {
-                                    if (!currentActivity.getIntent().hasExtra("unique_id")) {
-                                        appOpenAdAppLovin.showAdIfAvailable(currentActivity, Constant.APPLOVIN_APP_OPEN_AP_ID);
-                                    }
-                                }
-                                break;
 
-
-                        }
-                    }
-                }
-            }
-        }
-    };
 
     ActivityLifecycleCallbacks activityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
         @Override
@@ -84,9 +61,7 @@ public class MyApplication extends Application {
 
                         case APPLOVIN_MAX:
                             if (!Constant.APPLOVIN_APP_OPEN_AP_ID.equals("0")) {
-                                if (!appOpenAdAppLovin.isShowingAd) {
-                                    currentActivity = activity;
-                                }
+
                             }
                             break;
                         case STARTAPP:
@@ -122,10 +97,7 @@ public class MyApplication extends Application {
             if (Constant.AD_STATUS.equals(AD_STATUS_ON)) {
                 switch (Constant.AD_NETWORK) {
                     case APPLOVIN_MAX:
-                        if (!Constant.APPLOVIN_APP_OPEN_AP_ID.equals("0")) {
-                            appOpenAdAppLovin.showAdIfAvailable(activity, Constant.APPLOVIN_APP_OPEN_AP_ID, onShowAdCompleteListener);
-                            Constant.isAppOpen = true;
-                        }
+
                         break;
                     case STARTAPP:
 

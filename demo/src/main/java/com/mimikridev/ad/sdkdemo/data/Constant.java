@@ -4,7 +4,7 @@ public class Constant {
 
     public static final String AD_STATUS = "1";
 
-    public static String AD_NETWORK = "pangle";
+    public static String AD_NETWORK = "facebook";
     public static final String BACKUP_AD_NETWORK = "pangle";
 
     public static final String ADMOB_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";

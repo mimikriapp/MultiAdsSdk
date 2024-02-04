@@ -15,18 +15,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.applovin.adview.AppLovinInterstitialAd;
-import com.applovin.adview.AppLovinInterstitialAdDialog;
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.MaxReward;
-import com.applovin.mediation.MaxRewardedAdListener;
-import com.applovin.mediation.ads.MaxRewardedAd;
-import com.applovin.sdk.AppLovinAd;
-import com.applovin.sdk.AppLovinAdDisplayListener;
-import com.applovin.sdk.AppLovinAdLoadListener;
-import com.applovin.sdk.AppLovinAdSize;
-import com.applovin.sdk.AppLovinSdk;
+
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardItem;
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAd;
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdInteractionListener;
@@ -44,8 +33,7 @@ import com.ironsource.mediationsdk.sdk.LevelPlayRewardedVideoListener;
 import com.mimikridev.ad.sdk.util.OnRewardedAdCompleteListener;
 import com.mimikridev.ad.sdk.util.OnRewardedAdDismissedListener;
 import com.mimikridev.ad.sdk.util.OnRewardedAdErrorListener;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+
 
 
 public class RewardedAd {
@@ -57,10 +45,6 @@ public class RewardedAd {
         private final Activity activity;
 
         private com.facebook.ads.RewardedVideoAd fanRewardedVideoAd;
-        private StartAppAd startAppAd;
-        private MaxRewardedAd applovinMaxRewardedAd;
-        public AppLovinInterstitialAdDialog appLovinInterstitialAdDialog;
-        public AppLovinAd appLovinAd;
         //public static PAGRewardedAd mPAGRewardedAd;
         public PAGRewardedAd mPAGRewardedAd;
 
@@ -190,118 +174,7 @@ public class RewardedAd {
                                 .build());
                         break;
 
-                    case STARTAPP:
-                        startAppAd = new StartAppAd(activity);
-                        startAppAd.setVideoListener(() -> {
-                            onComplete.onRewardedAdComplete();
-                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad complete");
-                        });
-                        startAppAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
-                            @Override
-                            public void onReceiveAd(@NonNull com.startapp.sdk.adsbase.Ad ad) {
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
-                            }
 
-                            @Override
-                            public void onFailedToReceiveAd(@Nullable com.startapp.sdk.adsbase.Ad ad) {
-                                loadRewardedBackupAd(onComplete, onDismiss);
-                                Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad, try to load backup ad: " + backupAds);
-
-                            }
-                        });
-                        break;
-
-
-                    case APPLOVIN_MAX:
-                        applovinMaxRewardedAd = MaxRewardedAd.getInstance(applovinMaxRewardedId, activity);
-                        applovinMaxRewardedAd.loadAd();
-                        applovinMaxRewardedAd.setListener(new MaxRewardedAdListener() {
-                            @Override
-                            public void onUserRewarded(MaxAd maxAd, MaxReward maxReward) {
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded ad complete");
-                            }
-
-                            @Override
-                            public void onRewardedVideoStarted(MaxAd maxAd) {
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded video started");
-                            }
-
-                            @Override
-                            public void onRewardedVideoCompleted(MaxAd maxAd) {
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded video complete");
-                            }
-
-                            @Override
-                            public void onAdLoaded(MaxAd maxAd) {
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
-                            }
-
-                            @Override
-                            public void onAdDisplayed(MaxAd maxAd) {
-
-                            }
-
-                            @Override
-                            public void onAdHidden(MaxAd maxAd) {
-                                loadRewardedAd(onComplete, onDismiss);
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded ad hidden");
-                            }
-
-                            @Override
-                            public void onAdClicked(MaxAd maxAd) {
-
-                            }
-
-                            @Override
-                            public void onAdLoadFailed(String s, MaxError maxError) {
-                                loadRewardedBackupAd(onComplete, onDismiss);
-                                Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
-                            }
-
-                            @Override
-                            public void onAdDisplayFailed(MaxAd maxAd, MaxError maxError) {
-                                loadRewardedBackupAd(onComplete, onDismiss);
-                                Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
-                            }
-                        });
-                        break;
-
-                    case APPLOVIN_DISCOVERY:
-                        //AdRequest.Builder builder = new AdRequest.Builder();
-                        Bundle interstitialExtras = new Bundle();
-                        interstitialExtras.putString("zone_id", applovinDiscRewardedZoneId);
-                        //builder.addCustomEventExtrasBundle(AppLovinCustomEventInterstitial.class, interstitialExtras);
-                        AppLovinSdk.getInstance(activity).getAdService().loadNextAd(AppLovinAdSize.INTERSTITIAL, new AppLovinAdLoadListener() {
-                            @Override
-                            public void adReceived(AppLovinAd ad) {
-                                appLovinAd = ad;
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
-                            }
-
-                            @Override
-                            public void failedToReceiveAd(int errorCode) {
-                                loadRewardedBackupAd(onComplete, onDismiss);
-                                Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + errorCode + ", try to load backup ad: " + backupAds);
-                            }
-                        });
-                        appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
-                        appLovinInterstitialAdDialog.setAdDisplayListener(new AppLovinAdDisplayListener() {
-                            @Override
-                            public void adDisplayed(AppLovinAd appLovinAd) {
-
-                            }
-
-                            @Override
-                            public void adHidden(AppLovinAd appLovinAd) {
-                                loadRewardedAd(onComplete, onDismiss);
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + mainAds + "] " + "ad hidden");
-                            }
-                        });
-                        break;
 
                     case PANGLE:
                         PAGRewardedRequest request = new PAGRewardedRequest();
@@ -483,113 +356,7 @@ public class RewardedAd {
                                 .build());
                         break;
 
-                    case STARTAPP:
-                        startAppAd = new StartAppAd(activity);
-                        startAppAd.setVideoListener(() -> {
-                            onComplete.onRewardedAdComplete();
-                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad complete");
-                        });
-                        startAppAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
-                            @Override
-                            public void onReceiveAd(@NonNull com.startapp.sdk.adsbase.Ad ad) {
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
-                            }
 
-                            @Override
-                            public void onFailedToReceiveAd(@Nullable com.startapp.sdk.adsbase.Ad ad) {
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad, try to load backup ad: " + backupAds);
-                            }
-                        });
-                        break;
-
-
-                    case APPLOVIN_MAX:
-                        applovinMaxRewardedAd = MaxRewardedAd.getInstance(applovinMaxRewardedId, activity);
-                        applovinMaxRewardedAd.setListener(new MaxRewardedAdListener() {
-                            @Override
-                            public void onUserRewarded(MaxAd maxAd, MaxReward maxReward) {
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "user earn rewards");
-                            }
-
-                            @Override
-                            public void onRewardedVideoStarted(MaxAd maxAd) {
-
-                            }
-
-                            @Override
-                            public void onRewardedVideoCompleted(MaxAd maxAd) {
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded video complete");
-                            }
-
-                            @Override
-                            public void onAdLoaded(MaxAd maxAd) {
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
-                            }
-
-                            @Override
-                            public void onAdDisplayed(MaxAd maxAd) {
-
-                            }
-
-                            @Override
-                            public void onAdHidden(MaxAd maxAd) {
-                                loadRewardedAd(onComplete, onDismiss);
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + backupAds + "] [backup]" + "rewarded ad hidden");
-                            }
-
-                            @Override
-                            public void onAdClicked(MaxAd maxAd) {
-
-                            }
-
-                            @Override
-                            public void onAdLoadFailed(String s, MaxError maxError) {
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
-                            }
-
-                            @Override
-                            public void onAdDisplayFailed(MaxAd maxAd, MaxError maxError) {
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
-                            }
-                        });
-                        applovinMaxRewardedAd.loadAd();
-                        break;
-
-                    case APPLOVIN_DISCOVERY:
-                        //AdRequest.Builder builder = new AdRequest.Builder();
-                        Bundle interstitialExtras = new Bundle();
-                        interstitialExtras.putString("zone_id", applovinDiscRewardedZoneId);
-                        //builder.addCustomEventExtrasBundle(AppLovinCustomEventInterstitial.class, interstitialExtras);
-                        AppLovinSdk.getInstance(activity).getAdService().loadNextAd(AppLovinAdSize.INTERSTITIAL, new AppLovinAdLoadListener() {
-                            @Override
-                            public void adReceived(AppLovinAd ad) {
-                                appLovinAd = ad;
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
-                            }
-
-                            @Override
-                            public void failedToReceiveAd(int errorCode) {
-                                Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + errorCode + ", try to load backup ad: " + backupAds);
-                            }
-                        });
-                        appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
-                        appLovinInterstitialAdDialog.setAdDisplayListener(new AppLovinAdDisplayListener() {
-                            @Override
-                            public void adDisplayed(AppLovinAd appLovinAd) {
-
-                            }
-
-                            @Override
-                            public void adHidden(AppLovinAd appLovinAd) {
-                                loadRewardedAd(onComplete, onDismiss);
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "[" + mainAds + "] " + "ad hidden");
-                            }
-                        });
-                        break;
 
 
                     case PANGLE:
@@ -732,55 +499,6 @@ public class RewardedAd {
                         }
                         break;
 
-                    case STARTAPP:
-                        if (startAppAd != null) {
-                            startAppAd.showAd();
-//                            startAppAd.showAd(new AdDisplayListener() {
-//                                @Override
-//                                public void adHidden(com.startapp.sdk.adsbase.Ad ad) {
-//                                    Log.d(TAG, "[" + mainAds + "] " + "rewarded ad dismissed");
-//                                    loadRewardedAd();
-//                                }
-//
-//                                @Override
-//                                public void adDisplayed(com.startapp.sdk.adsbase.Ad ad) {
-//
-//                                }
-//
-//                                @Override
-//                                public void adClicked(com.startapp.sdk.adsbase.Ad ad) {
-//
-//                                }
-//
-//                                @Override
-//                                public void adNotDisplayed(com.startapp.sdk.adsbase.Ad ad) {
-//                                    loadRewardedBackupAd();
-//                                }
-//                            });
-                        } else {
-                            showRewardedBackupAd(onComplete, onDismiss, onError);
-                        }
-                        break;
-
-
-
-
-                    case APPLOVIN_MAX:
-                        if (applovinMaxRewardedAd != null && applovinMaxRewardedAd.isReady()) {
-                            applovinMaxRewardedAd.showAd();
-                        } else {
-                            showRewardedBackupAd(onComplete, onDismiss, onError);
-                        }
-                        break;
-
-                    case APPLOVIN_DISCOVERY:
-                        if (appLovinInterstitialAdDialog != null) {
-                            appLovinInterstitialAdDialog.showAndRender(appLovinAd);
-                        } else {
-                            showRewardedBackupAd(onComplete, onDismiss, onError);
-                        }
-                        break;
-
                     case IRONSOURCE:
                         if (IronSource.isRewardedVideoAvailable()) {
                             IronSource.showRewardedVideo(ironSourceRewardedId);
@@ -815,31 +533,6 @@ public class RewardedAd {
                     case FACEBOOK:
                         if (fanRewardedVideoAd != null && fanRewardedVideoAd.isAdLoaded()) {
                             fanRewardedVideoAd.show();
-                        } else {
-                            onError.onRewardedAdError();
-                        }
-                        break;
-
-                    case STARTAPP:
-                        if (startAppAd != null) {
-                            startAppAd.showAd();
-                        } else {
-                            onError.onRewardedAdError();
-                        }
-                        break;
-
-
-                    case APPLOVIN_MAX:
-                        if (applovinMaxRewardedAd != null && applovinMaxRewardedAd.isReady()) {
-                            applovinMaxRewardedAd.showAd();
-                        } else {
-                            onError.onRewardedAdError();
-                        }
-                        break;
-
-                    case APPLOVIN_DISCOVERY:
-                        if (appLovinInterstitialAdDialog != null) {
-                            appLovinInterstitialAdDialog.showAndRender(appLovinAd);
                         } else {
                             onError.onRewardedAdError();
                         }
