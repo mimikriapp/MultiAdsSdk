@@ -18,13 +18,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     lintOptions {
         disable 'GradleDependency'
     }
 }
+
 
 dependencies {
 
@@ -37,8 +38,8 @@ dependencies {
 
     implementation 'com.ironsource.sdk:mediationsdk:8.3.0'
     implementation 'com.facebook.android:audience-network-sdk:6.17.0'
-   // implementation 'com.pangle.global:ads-sdk:6.3.0.0'
-    //implementation(name: 'open_ad_sdk_6.3.0.0', ext: 'aar')
+    implementation 'com.pangle.global:ads-sdk:6.1.0.9'
+
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
